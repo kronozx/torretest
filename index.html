@@ -10,7 +10,16 @@
 </head>
 
 <body>
-    <div>Torre Metrics Web</div>
+    <div>
+        <h1>Torre Metrics Web</h1>
+    </div>
+
+    <div class="form-group">
+        <label for="sampleSize">Please define a sample size of people looking for jobs</label>
+        <input class="form-control" id="sampleSize" type="number" name="sampleSize"
+            placeholder="Sample Size (Number)" />
+        <button type="submit" id="buttonSampleSize">Get Sample</button>
+    </div>
 </body>
 
 <script>
@@ -20,9 +29,18 @@
         redirect: 'follow'
     };
 
-    const sampleSize = 5;
-    const endpointJobsPost = `https://search.torre.co/opportunities/_search/?size=${sampleSize}&aggregate=$aggregate`;
+    let sampleSize = 10;
+    const endpointJobsPost = `https://search.torre.co/people/_search/?size=${sampleSize}&aggregate=$aggregate`;
     const sampleArray = [];
+
+    const sampleSizeInput = document.querySelector('#sampleSize');
+    // console.log(sampleSizeInput.value);
+    const sampleButton = document.querySelector('#buttonSampleSize');
+
+    sampleButton.addEventListener('click', () => {
+        sampleSize = parseInt(sampleSizeInput.value);
+        console.log(sampleSize);
+    });
 
     fetch(endpointJobsPost, requestOptions)
         .then(response => {
