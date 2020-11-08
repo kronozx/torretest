@@ -14,6 +14,28 @@
 </body>
 
 <script>
+    //---------------------OPPORTUNITIES DATA WITH POST REQUEST-----------------
+    const requestOptions = {
+        method: 'POST',
+        redirect: 'follow'
+    };
+
+    const sampleSize = 5;
+    const endpointJobsPost = `https://search.torre.co/opportunities/_search/?size=${sampleSize}&aggregate=$aggregate`;
+    const sampleArray = [];
+
+    fetch(endpointJobsPost, requestOptions)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.results);
+            let results = data.results;
+            sampleArray.push(...results);
+        })
+        .catch(error => console.log('error', error));
+
+    //----------------------OPPORTUNITIES ID----------------------------
     // var myHeaders = new Headers();
     // myHeaders.append("Cookie", "discovery.hal=9bfcee8c-1bd0-40c2-8f65-203c2d986973; discovery.jupiter=e0d069a8-3758-4833-a64a-9b51c83fd455");
 
@@ -29,29 +51,21 @@
     //     .catch(error => console.log('error', error));
 
     // --------------USERNAME---------------
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-
-    fetch("https://torre.bio/api/bios/jorgegarcias", requestOptions)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            console.log(data.person.location.name);
-        })
-        .catch(error => console.log('error', error));
-
     // var requestOptions = {
-    //     method: 'POST',
+    //     method: 'GET',
     //     redirect: 'follow'
     // };
 
-    // fetch("https://search.torre.co/opportunities/_search/", requestOptions)
-    //     .then(response => response.text())
-    //     .then(result => console.log(result))
+    // fetch("https://torre.bio/api/bios/jorgegarcias", requestOptions)
+    //     .then(response => {
+    //         return response.json();
+    //     })
+    //     .then(data => {
+    //         console.log(data.person.location.name);
+    //     })
     //     .catch(error => console.log('error', error));
+
+
 
 
 
