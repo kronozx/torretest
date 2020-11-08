@@ -15,43 +15,94 @@
     </div>
 
     <div class="form-group">
-        <label for="sampleSize">Please define a sample size of people looking for jobs</label>
+        <label for="sampleSize">Please define a sample size of people looking for jobs (less than or equal to 5000 for
+            testing purposes)</label>
         <input class="form-control" id="sampleSize" type="number" name="sampleSize"
             placeholder="Sample Size (Number)" />
         <button type="submit" id="buttonSampleSize">Get Sample</button>
     </div>
+    <br>
+    <br>
+    <div id="searchCountry" style="display: none;">
+        <label for="country">Number of People by Country</label>
+        <select id="country" name="country" required>
+            <option value="colombia">Colombia</option>
+            <option value="mexico">Mexico</option>
+            <option value="peru">Peru</option>
+        </select>
+        <button type="submit" id="peopleByCountry">Get Number of People</button>
+    </div>
+
 </body>
 
 <script>
     //---------------------OPPORTUNITIES DATA WITH POST REQUEST-----------------
+    // requestOptions Object for Post Requests with fecth()
     const requestOptions = {
         method: 'POST',
         redirect: 'follow'
     };
 
     let sampleSize = 10;
-    const endpointJobsPost = `https://search.torre.co/people/_search/?size=${sampleSize}&aggregate=$aggregate`;
     const sampleArray = [];
+    let searchCountry = null;
+    let peopleCountryArray = null;
 
     const sampleSizeInput = document.querySelector('#sampleSize');
     // console.log(sampleSizeInput.value);
     const sampleButton = document.querySelector('#buttonSampleSize');
+    const peopleByCountryButton = document.querySelector('#peopleByCountry');
 
     sampleButton.addEventListener('click', () => {
         sampleSize = parseInt(sampleSizeInput.value);
         console.log(sampleSize);
+        fetchSample();
     });
 
-    fetch(endpointJobsPost, requestOptions)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            console.log(data.results);
-            let results = data.results;
-            sampleArray.push(...results);
-        })
-        .catch(error => console.log('error', error));
+    peopleByCountryButton.addEventListener('click', () => {
+        const countrySelected = document.querySelector('#country');
+        // console.log(countrySelected.value);
+        // console.log(typeof countrySelected.value);
+        let countrytoMatch = countrySelected.value.toString();
+        // console.log(countrytoMatch);
+        peopleCountryArray = findCountryMatch(countrytoMatch, sampleArray);
+        return `
+      <p>
+        <span class=""> There are ${peopleCountryArray.length} from ${countrytoMatch} looking for jobs in Torre</span>
+      </p>
+    `;
+    });
+
+    function fetchSample() {
+        const endpointJobsPost = `https://search.torre.co/people/_search/?size=${sampleSize}&aggregate=$aggregate`;
+        fetch(endpointJobsPost, requestOptions)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data.results);
+                let results = data.results;
+                sampleArray.push(...results);
+                showCountrySearch();
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    function showCountrySearch() {
+        searchCountry = document.querySelector('#searchCountry');
+        searchCountry.style.display = "block";
+        // console.log(searchCountry);
+    }
+
+    function findCountryMatch(countryToMatch, sampleArray) {
+        return sampleArray.filter(result => {
+            // here we need to figure out if the city or state matches what was searched
+            const regex = new RegExp(countryToMatch, 'gi');
+            return result.locationName.match(regex);
+        });
+    }
+
+
 
     //----------------------OPPORTUNITIES ID----------------------------
     // var myHeaders = new Headers();
