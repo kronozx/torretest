@@ -29,9 +29,14 @@
             <option value="colombia">Colombia</option>
             <option value="mexico">Mexico</option>
             <option value="peru">Peru</option>
+            <option value="venezuela">Venezuela</option>
+            <option value="chile">Chile</option>
+            <option value="argentina">Argentina</option>
         </select>
         <button type="submit" id="peopleByCountry">Get Number of People</button>
     </div>
+
+    <div id="results"></div>
 
 </body>
 
@@ -66,11 +71,12 @@
         let countrytoMatch = countrySelected.value.toString();
         // console.log(countrytoMatch);
         peopleCountryArray = findCountryMatch(countrytoMatch, sampleArray);
-        return `
-      <p>
-        <span class=""> There are ${peopleCountryArray.length} from ${countrytoMatch} looking for jobs in Torre</span>
-      </p>
-    `;
+        console.log(peopleCountryArray);
+        var tag = document.createElement("p");
+        var text = document.createTextNode(`There are ${peopleCountryArray.length} people from ${countrytoMatch} looking for opportunities in Torre`);
+        tag.appendChild(text);
+        var results = document.querySelector('#results');
+        results.appendChild(tag);
     });
 
     function fetchSample() {
